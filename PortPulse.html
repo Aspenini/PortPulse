@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Unofficial Ports - PortPulse</title>
+    <style>
+        /* Global Styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #1f1f3a, #3a3a5a);
+            color: #e5e5e5;
+            line-height: 1.6;
+            transition: background 0.5s, color 0.5s;
+        }
+        body.light-mode {
+            background: linear-gradient(145deg, #f0f0f5, #d9d9e5);
+            color: #2a2a3a;
+        }
+
+        /* Desktop Header */
+        .header {
+            position: sticky;
+            top: 0;
+            background: rgba(31, 31, 58, 0.92);
+            backdrop-filter: blur(15px);
+            padding: 25px 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 100;
+            animation: slideDown 0.7s ease-out;
+        }
+        .light-mode .header {
+            background: rgba(240, 240, 245, 0.92);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .header-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #7b7bff, #a1c4fd);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .header-nav ul {
+            display: flex;
+            list-style: none;
+        }
+        .header-nav li { margin: 0 30px; }
+        .header-nav a {
+            color: #b0b0d0;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 30px;
+            transition: all 0.4s ease;
+        }
+        .light-mode .header-nav a { color: #4a4a6a; }
+        .header-nav a:hover {
+            color: #fff;
+            background: rgba(123, 123, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .light-mode .header-nav a:hover {
+            color: #2a2a3a;
+            background: rgba(123, 123, 255, 0.2);
+        }
+        .header-search input {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            padding: 14px 50px 14px 20px;
+            border-radius: 30px;
+            color: #fff;
+            width: 250px;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: width 0.5s ease, background 0.3s ease;
+        }
+        .light-mode .header-search input {
+            background: rgba(0, 0, 0, 0.1);
+            color: #2a2a3a;
+        }
+        .header-search input:focus {
+            width: 320px;
+            background: rgba(255, 255, 255, 0.25);
+            outline: none;
+        }
+        .light-mode .header-search input:focus {
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        /* Mode Toggle (Desktop) */
+        .mode-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(123, 123, 255, 0.8);
+            border: none;
+            color: #fff;
+            font-size: 1.8rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, background 0.3s ease;
+            z-index: 101;
+        }
+        .mode-toggle:hover { transform: scale(1.1); }
+        .light-mode .mode-toggle {
+            background: rgba(255, 204, 0, 0.8);
+            color: #2a2a3a;
+        }
+
+        /* Main Content (Desktop) */
+        .container {
+            max-width: 1400px;
+            margin: 60px auto;
+            padding: 0 40px;
+        }
+        h1 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 25px;
+            background: linear-gradient(90deg, #7b7bff, #a1c4fd);
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: fadeIn 1s ease-out;
+        }
+        .intro {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 50px;
+            color: #b0b0d0;
+            animation: fadeIn 1.3s ease-out 0.3s backwards;
+        }
+        .light-mode .intro { color: #4a4a6a; }
+        .table-wrapper {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            overflow-x: auto;
+            transition: background 0.5s;
+        }
+        .light-mode .table-wrapper {
+            background: rgba(0, 0, 0, 0.05);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            animation: fadeInUp 1s ease-out 0.5s backwards;
+        }
+        th, td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .light-mode th, .light-mode td {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        th {
+            background: linear-gradient(90deg, #5a5a9a, #7b7bff);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #fff;
+        }
+        .light-mode th {
+            background: linear-gradient(90deg, #d0d0e0, #a1c4fd);
+            color: #2a2a3a;
+        }
+        td {
+            background: rgba(255, 255, 255, 0.05);
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .light-mode td { background: rgba(0, 0, 0, 0.03); }
+        tr:hover td {
+            background: rgba(123, 123, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        .light-mode tr:hover td {
+            background: rgba(123, 123, 255, 0.15);
+        }
+        .playability {
+            background: rgba(0, 255, 100, 0.15);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            display: inline-block;
+        }
+        .playability.bad {
+            background: rgba(255, 100, 0, 0.15);
+        }
+
+        /* Footer (Desktop) */
+        .footer {
+            background: linear-gradient(135deg, #3a3a5a, #5a5a9a);
+            padding: 60px 40px;
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
+            border-top-left-radius: 50px;
+            border-top-right-radius: 50px;
+            transition: background 0.5s;
+        }
+        .light-mode .footer {
+            background: linear-gradient(135deg, #d9d9e5, #b0b0d0);
+        }
+        .footer-column ul { list-style: none; }
+        .footer-column li { margin: 15px 0; font-weight: 400; }
+        .footer-column a {
+            color: #d5d5e5;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .light-mode .footer-column a { color: #4a4a6a; }
+        .footer-column a:hover {
+            color: #7b7bff;
+            transform: translateX(5px);
+        }
+        .footer-social .icon-container {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            margin: 0 20px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            transition: transform 0.4s ease, filter 0.4s ease;
+        }
+        .footer-social .icon-container:hover {
+            transform: scale(1.2) rotate(10deg);
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Mobile-Specific Styles */
+        @media (max-width: 800px) {
+            .header {
+                padding: 15px 20px;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .header-logo { font-size: 1.5rem; }
+            .header-nav {
+                display: none;
+                position: fixed;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background: rgba(31, 31, 58, 0.95);
+                padding: 20px;
+                z-index: 99;
+            }
+            .light-mode .header-nav {
+                background: rgba(240, 240, 245, 0.95);
+            }
+            .header-nav.active { display: block; }
+            .header-nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            .header-nav li { margin: 15px 0; }
+            .header-search {
+                position: absolute;
+                top: 70px;
+                left: 20px;
+                right: 20px;
+                display: none;
+            }
+            .header-search.active { display: block; }
+            .header-search input {
+                width: 100%;
+                padding: 12px 20px;
+                border-radius: 25px;
+            }
+            .hamburger {
+                display: block;
+                background: none;
+                border: none;
+                color: #b0b0d0;
+                font-size: 1.8rem;
+                cursor: pointer;
+            }
+            .light-mode .hamburger { color: #4a4a6a; }
+
+            .container { margin: 20px auto; padding: 0 15px; }
+            h1 { font-size: 2rem; }
+            .intro { font-size: 1rem; }
+            .table-wrapper { padding: 15px; border-radius: 20px; }
+            th, td { padding: 12px; font-size: 0.9rem; }
+            .playability { font-size: 0.85rem; }
+
+            .footer {
+                padding: 40px 20px;
+                flex-direction: column;
+                text-align: center;
+                gap: 30px;
+            }
+            .footer-social .icon-container { margin: 10px; }
+
+            .mobile-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: rgba(31, 31, 58, 0.95);
+                padding: 10px;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                z-index: 100;
+            }
+            .light-mode .mobile-nav {
+                background: rgba(240, 240, 245, 0.95);
+            }
+            .mobile-nav button {
+                background: none;
+                border: none;
+                color: #b0b0d0;
+                font-size: 1.5rem;
+                cursor: pointer;
+                transition: transform 0.3s ease;
+            }
+            .light-mode .mobile-nav button { color: #4a4a6a; }
+            .mobile-nav button:hover { transform: scale(1.1); }
+            .mode-toggle { position: static; box-shadow: none; }
+        }
+
+        /* Desktop-Only Styles */
+        @media (min-width: 801px) {
+            .hamburger, .mobile-nav, .search-toggle { display: none; }
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-logo">
+            <a href="#">PortPulse</a>
+        </div>
+        <nav class="header-nav">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Ports</a></li>
+                <li><a href="#">Tools</a></li>
+                <li><a href="#">Community</a></li>
+            </ul>
+        </nav>
+        <div class="header-tools">
+            <div class="header-search">
+                <input type="search" id="searchInput" placeholder="Search ports...">
+            </div>
+            <button class="hamburger" onclick="toggleMenu()">☰</button>
+            <button class="search-toggle" onclick="toggleSearch()">🔍</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>List of Unofficial Ports</h1>
+        <p class="intro">
+            Discover fan-made ports that bring classic games to modern platforms with enhanced features and performance.
+        </p>
+        <div class="table-wrapper">
+            <table id="portsTable">
+                <thead>
+                    <tr>
+                        <th>Game</th>
+                        <th>Original Platform</th>
+                        <th>Port Developer</th>
+                        <th>Release Status</th>
+                        <th>Playability</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mystical Ninja Starring Goemon</td>
+                        <td>Nintendo 64</td>
+                        <td>Fan Community</td>
+                        <td>Released (2024)</td>
+                        <td class="playability">Playable - 60 FPS, enhanced controls</td>
+                    </tr>
+                    <tr>
+                        <td>Super Mario 64</td>
+                        <td>Nintendo 64</td>
+                        <td>SM64PC Team</td>
+                        <td>Released (2020)</td>
+                        <td class="playability">Highly Playable - Widescreen, mod support</td>
+                    </tr>
+                    <tr>
+                        <td>Perfect Dark</td>
+                        <td>Nintendo 64</td>
+                        <td>Perfect Dark Decomp Team</td>
+                        <td>Released (2021)</td>
+                        <td class="playability">Playable - Mouse/keyboard support, stable</td>
+                    </tr>
+                    <tr>
+                        <td>Jak and Daxter</td>
+                        <td>PlayStation 2</td>
+                        <td>OpenGOAL Team</td>
+                        <td>Released (2022)</td>
+                        <td class="playability">Playable - High resolution, smooth</td>
+                    </tr>
+                    <tr>
+                        <td>Driver</td>
+                        <td>PlayStation 1</td>
+                        <td>Fan Project</td>
+                        <td>In Development</td>
+                        <td class="playability bad">Unstable - Early alpha, bugs</td>
+                    </tr>
+                    <tr>
+                        <td>Sonic Unleashed</td>
+                        <td>Xbox 360</td>
+                        <td>Unleashed Recompiled Team</td>
+                        <td>Released (2025)</td>
+                        <td class="playability">Highly Playable - 4K, ultrawide, 60+ FPS</td>
+                    </tr>
+                    <tr>
+                        <td>The Legend of Zelda: Ocarina of Time</td>
+                        <td>Nintendo 64</td>
+                        <td>Ship of Harkinian Team</td>
+                        <td>Released (2022)</td>
+                        <td class="playability">Playable - Enhanced visuals, mod support</td>
+                    </tr>
+                    <tr>
+                        <td>Crash Team Racing</td>
+                        <td>PlayStation 1</td>
+                        <td>CTR Decomp Team</td>
+                        <td>Released (2023)</td>
+                        <td class="playability">Playable - High framerate, online play</td>
+                    </tr>
+                    <tr>
+                        <td>Super Mario Sunshine</td>
+                        <td>GameCube</td>
+                        <td>Fan Community</td>
+                        <td>In Development</td>
+                        <td class="playability bad">Unstable - Beta, incomplete features</td>
+                    </tr>
+                    <tr>
+                        <td>GoldenEye 007</td>
+                        <td>Nintendo 64</td>
+                        <td>GoldenEye Decomp Team</td>
+                        <td>Released (2021)</td>
+                        <td class="playability">Playable - Modern controls, stable</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-column">
+            <ul>
+                <li><a href="#">About PortPulse</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Privacy</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <ul>
+                <li><a href="#">Contribute</a></li>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Terms</a></li>
+            </ul>
+        </div>
+        <div class="footer-social">
+            <a href="#" class="icon-container footer-facebook"></a>
+            <a href="#" class="icon-container footer-twitter"></a>
+            <a href="#" class="icon-container footer-youtube"></a>
+            <a href="#" class="icon-container footer-steam"></a>
+            <a href="#" class="icon-container footer-discord"></a>
+        </div>
+    </footer>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <button onclick="toggleMenu()">☰</button>
+        <button onclick="toggleSearch()">🔍</button>
+        <button class="mode-toggle" onclick="toggleMode()">☾</button>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Dynamic Search
+        const searchInput = document.getElementById('searchInput');
+        const table = document.getElementById('portsTable');
+        const rows = table.getElementsByTagName('tr');
+
+        searchInput.addEventListener('input', function() {
+            const filter = searchInput.value.toLowerCase();
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let match = false;
+                for (let cell of cells) {
+                    if (cell.textContent.toLowerCase().includes(filter)) {
+                        match = true;
+                        break;
+                    }
+                }
+                rows[i].style.display = match ? '' : 'none';
+            }
+        });
+
+        // Mode Toggle
+        function toggleMode() {
+            document.body.classList.toggle('light-mode');
+            const toggle = document.querySelector('.mode-toggle');
+            toggle.textContent = document.body.classList.contains('light-mode') ? '☀' : '☾';
+        }
+
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const nav = document.querySelector('.header-nav');
+            nav.classList.toggle('active');
+        }
+
+        // Mobile Search Toggle
+        function toggleSearch() {
+            const search = document.querySelector('.header-search');
+            search.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
